@@ -8,7 +8,9 @@ export const userActions = {
     logout,
     register,
     getAll,
-    delete: _delete
+    delete: _delete,
+    deleteSd,
+    requestSd,
 };
 
 function login(username, password) {
@@ -92,4 +94,41 @@ function _delete(id) {
     function request(id) { return { type: userConstants.DELETE_REQUEST, id } }
     function success(id) { return { type: userConstants.DELETE_SUCCESS, id } }
     function failure(id, error) { return { type: userConstants.DELETE_FAILURE, id, error } }
+}
+function deleteSd(id) {
+    return dispatch => {
+        dispatch(request(id));
+
+        userService.deleteSd(id)
+            .then(
+                user => dispatch(success(id)),
+                error => dispatch(failure(id, error.toString()))
+            );
+    };
+
+    function request(id) { return { type: userConstants.SD_DELETE_REQUEST, id } }
+    function success(id) { return { type: userConstants.SD_DELETE_SUCCESS, id } }
+    function failure(id, error) { return { type: userConstants.SD_DELETE_FAILURE, id, error } }
+}
+function requestSd(details) {
+    return dispatch => {
+        dispatch(request(details));
+
+        userService.requestSd(details)
+            .then(
+                user => { 
+                    dispatch(success());
+                    // history.push('/login');
+                    dispatch(alertActions.success('Request saved successfully.'));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request(user) { return { type: userConstants.REGISTER_REQUEST, user } }
+    function success(user) { return { type: userConstants.REGISTER_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.REGISTER_FAILURE, error } }
 }

@@ -8,17 +8,19 @@ export const userService = {
     getAll,
     getById,
     update,
-    delete: _delete
+    delete: _delete,
+    deleteSd,
+    requestSd,
 };
 
-function login(username, password) {
+function login(email, password) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/login`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -38,8 +40,8 @@ function getAll() {
         method: 'GET',
         headers: authHeader()
     };
-
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
+console.log('requestOptions :>> ', requestOptions);
+    return fetch(`${config.apiUrl}/auth/subdomains`, requestOptions).then(handleResponse);
 }
 
 function getById(id) {
@@ -48,7 +50,7 @@ function getById(id) {
         headers: authHeader()
     };
 
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/auth/user/${id}`, requestOptions).then(handleResponse);
 }
 
 function register(user) {
@@ -58,7 +60,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch(`${config.apiUrl}/users/register`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/register`, requestOptions).then(handleResponse);
 }
 
 function update(user) {
@@ -79,6 +81,23 @@ function _delete(id) {
     };
 
     return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+}
+function deleteSd(id) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: authHeader()
+    };
+
+    return fetch(`${config.apiUrl}/auth/subdomain/${id}`, requestOptions).then(handleResponse);
+}
+function requestSd(details) {
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify(details)
+    };
+
+    return fetch(`${config.apiUrl}/auth/request_subdomain`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {

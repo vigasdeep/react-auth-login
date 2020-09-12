@@ -9,28 +9,30 @@ class HomePage extends React.Component {
         this.props.getUsers();
     }
 
-    handleDeleteUser(id) {
-        return (e) => this.props.deleteUser(id);
+    handleDeleteSd(id) {
+        return (e) => this.props.deleteSd(id);
     }
 
     render() {
         const { user, users } = this.props;
         return (
             <div className="col-md-6 col-md-offset-3">
-                <h1>Hi {user.firstName}!</h1>
+                <h1>Hi {user.user.Name}!</h1>
                 <p>You're logged in with React!!</p>
+                <Link to="/request-subdomain">Request Subdomain</Link>
                 <h3>All registered users:</h3>
                 {users.loading && <em>Loading users...</em>}
                 {users.error && <span className="text-danger">ERROR: {users.error}</span>}
                 {users.items &&
                     <ul>
-                        {users.items.map((user, index) =>
-                            <li key={user.id}>
-                                {user.firstName + ' ' + user.lastName}
+                        {users.items.map((sd, index) =>
+                            <li key={sd.ID}>
+
+                                { sd.Name + ' ' + sd.Pointer + ' ' + sd.Description}
                                 {
-                                    user.deleting ? <em> - Deleting...</em>
-                                    : user.deleteError ? <span className="text-danger"> - ERROR: {user.deleteError}</span>
-                                    : <span> - <a onClick={this.handleDeleteUser(user.id)}>Delete</a></span>
+                                    sd.deleting ? <em> - Deleting...</em>
+                                    : sd.deleteError ? <span className="text-danger"> - ERROR: {sd.deleteError}</span>
+                                    : <span> - <a onClick={this.handleDeleteSd(sd.ID)}>Delete</a></span>
                                 }
                             </li>
                         )}
@@ -52,7 +54,8 @@ function mapState(state) {
 
 const actionCreators = {
     getUsers: userActions.getAll,
-    deleteUser: userActions.delete
+    deleteUser: userActions.delete,
+    deleteSd: userActions.deleteSd
 }
 
 const connectedHomePage = connect(mapState, actionCreators)(HomePage);
